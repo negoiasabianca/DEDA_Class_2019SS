@@ -1,0 +1,11 @@
+Name of Quantlet: 'Branding'
+
+Published in: DEDA_Class_2019SS
+
+Description: This folder contains the code to brand the Crix Coin correctly 
+
+Keywords: compilation, crixcoin, crix
+
+Author: Kevin Noessler, Thomas Herrdum
+
+Submitted:  24. Jul 2019,  Kevin Noessler, Thomas Herrdum

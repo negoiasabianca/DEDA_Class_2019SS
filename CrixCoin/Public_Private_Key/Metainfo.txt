@@ -1,0 +1,11 @@
+Name of Quantlet: 'Public_Private_Key'
+
+Published in: DEDA_Class_2019SS
+
+Description: This folder contains the code to create a new key pair for the Crix Coin
+
+Keywords: public key, private key, crixcoin, crix
+
+Author: Kevin Noessler, Thomas Herrdum
+
+Submitted:  24. Jul 2019,  Kevin Noessler, Thomas Herrdum

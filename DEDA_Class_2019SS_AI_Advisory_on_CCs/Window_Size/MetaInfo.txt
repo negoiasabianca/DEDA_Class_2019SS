@@ -1,0 +1,13 @@
+Name of QuantLet:   Window_Size
+
+Published in:       'DEDA Class'
+
+Description:        'Select the optimal window-size for the training of the LSTM'
+
+Keywords:           window_size, optimal, LSTM
+
+Author:             Georg Velev, Iliyana Pekova
+
+Submitted:          Thu, August 01 2019 by Georg Velev, Iliyana Pekova
+
+Output:             'Barplot_Window_Size in .PNG format'

@@ -1,0 +1,13 @@
+Name of QuantLet:   Data_Analysis
+
+Published in:       'DEDA Class'
+
+Description:        'Analyse the hourly returns of the collected data of the four coins.'
+
+Keywords:           data, analysis
+
+Author:             Georg Velev, Iliyana Pekova
+
+Submitted:          Thu, August 01 2019 by Georg Velev, Iliyana Pekova
+
+Output:             'Data_Analysis in .PNG format'

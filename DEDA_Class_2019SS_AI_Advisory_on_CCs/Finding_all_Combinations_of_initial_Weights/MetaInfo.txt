@@ -1,0 +1,13 @@
+Name of QuantLet:     Finding_all_Combinations_of_initial_Weights
+
+Published in:         'DEDA Class'
+
+Description:          'Finding all possible combinations of initial weights for a four-cryptocurrencies-portfolio'
+
+Keywords:             initial weights, combinations
+
+Author:               Georg Velev, Iliyana Pekova
+
+Submitted:            Thu, August 01 2019 by Georg Velev, Iliyana Pekova
+
+Output:               'combis in .png format'

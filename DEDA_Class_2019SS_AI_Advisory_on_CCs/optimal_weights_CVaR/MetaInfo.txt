@@ -1,0 +1,13 @@
+Name of QuantLet:  optimal_weights_CVaR
+
+Published in:      'DEDA Class'
+
+Description:       'Determining which the optimal portfolio weights are and what CVaR they result into'
+
+Keywords:          optimal weights, minimal CVaR
+
+Author:            Georg Velev, Iliyana Pekova
+
+Submitted:         Thu, August 01 2019 by Georg Velev, Iliyana Pekova
+
+Output:            'optimal_weights_CVaR in .PNG format'

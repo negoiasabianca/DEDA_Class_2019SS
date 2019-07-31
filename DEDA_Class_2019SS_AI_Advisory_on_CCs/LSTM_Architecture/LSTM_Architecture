@@ -1,32 +1,9 @@
-[<img src="https://github.com/QuantLet/Styleguide-and-FAQ/blob/master/pictures/banner.png" width="888" alt="Visit QuantNet">](http://quantlet.de/)
-
-```yaml
-Name of QuantLet: LSTM_Architecture
-
-Published in: 'DEDA Class'
-
-Description: 'Definition of the architecture of the LSTM that is used for the time-series prediction of the hourly returns.'
-
-Keywords: LSTM, architecture, time-series, prediction
-
-Author: Georg Velev, Iliyana Pekova
-
-Submitted: Thu, August 01 2019 by Georg Velev, Iliyana Pekova
-
-Output: 'Architecture_LSTM in .PNG format'
-```
-
-
-![Picture1](LSTM_Architecture.PNG)
-
-
-### Python Code
-```python
+#Definition of a custom error-function
 import keras.backend as K
 def root_mean_squared_error(y_true, y_pred):
         return K.sqrt(K.mean(K.square(y_pred - y_true)))
-        
-        
+
+#Definition of the architecture of LSTM:
 def multi_step_LSTM(n_steps_in=24, n_features=1,n_steps_out=24,nr_neurons=100,lr=0.01,epochs=1):
     import tensorflow as tf
     import keras
@@ -47,5 +24,4 @@ def multi_step_LSTM(n_steps_in=24, n_features=1,n_steps_out=24,nr_neurons=100,lr
     return model
 
   
-print(multi_step_LSTM().summary())       
-```
+print(multi_step_LSTM().summary())

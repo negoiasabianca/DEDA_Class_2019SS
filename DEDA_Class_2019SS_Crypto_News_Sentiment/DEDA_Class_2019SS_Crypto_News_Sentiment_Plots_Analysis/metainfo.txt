@@ -1,24 +1,24 @@
 Name of Quantlet: 'DEDA_Class_2019SS_Crypto_News_Sentiment_Plots_Analysis'
 
-Published in: 'DEDA_Class_2019SS'
+Published in: DEDA_Class_2019SS
 
-Description: 'Plotting modules to graph rolling-mean time series data
+Description:  Plotting modules to graph rolling-mean time series data
               taken from derived sentiment scores. These are plotted against
               BTC prices in USD for visualisation of the relationship. Basic
-              correlation and Granger causation are calculated as well.'
+              correlation and Granger causation are calculated as well.
 
-Keywords: 'Plotting, Time Series, Cryptocurrency'
+Keywords: Plotting, Time Series, Cryptocurrency
 
-Author: 'Alex Truesdale'
+Author: Alex Truesdale
 
-Submitted: 'Wed. July 31 2019 by Alex Truesdale'
+Submitted: Wed. July 31 2019 by Alex Truesdale
 
-Datafiles: '- bbc_bitcoin_scored.csv,
+Datafiles:  - bbc_bitcoin_scored.csv,
             - cnn_bitcoin_scored.csv,
             - nyt_bitcoin_scored.csv,
             - reuters_bitcoin_scored.csv'
 
-See also: '1) plots/*.png
+See also:  1) plots/*.png
 
            2) frequency_charts.py
            3) publications_price_charts.py
@@ -26,4 +26,4 @@ See also: '1) plots/*.png
            5) vader_sentiment_price_chart_analysis.py
            6) vader_textblob_compare.py
 
-           7) DEDA_Class_2019SS_Crypto_News_Sentiment_Sentiment_Scoring'
+           7) DEDA_Class_2019SS_Crypto_News_Sentiment_Sentiment_Scoring

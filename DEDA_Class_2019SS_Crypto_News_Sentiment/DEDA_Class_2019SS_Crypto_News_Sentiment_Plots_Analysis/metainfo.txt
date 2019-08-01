@@ -16,7 +16,7 @@ Submitted: 'Wed. July 31 2019 by Alex Truesdale'
 Datafiles: '- bbc_bitcoin_scored.csv,
             - cnn_bitcoin_scored.csv,
             - nyt_bitcoin_scored.csv,
-            - reuters_bitcoin_scored.csv
+            - reuters_bitcoin_scored.csv'
 
 See also: '1) plots/*.png
 

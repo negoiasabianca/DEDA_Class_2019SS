@@ -1,0 +1,254 @@
+# PROJECT NAME: Clustering Data In Crisis
+
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import numpy as np
+import pandas as pd
+
+import subprocess
+import sys
+
+
+# In[2]:
+
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+install("xlrd")
+
+
+# In[3]:
+
+
+df=pd.read_excel('Industry.xlsx')
+ 
+
+
+# In[4]:
+
+
+df['Date'] = pd.to_datetime(df['Date'], errors = 'coerce')
+def tryconvert(year):
+    try:
+        return str(round(year)).rstrip('0').rstrip('.')
+    except:
+        return year
+df.insert(4, "Year", df['Date'].apply(lambda x: tryconvert(x.year)))
+df.insert(5, "Month", df['Date'].apply(lambda x: tryconvert(x.month)))
+
+
+# In[5]:
+
+
+df=df.dropna()
+df.shape
+
+
+# In[6]:
+
+
+cris=df[df['Year']>='2007']
+cris=df[df['Year']<='2008']
+cris.shape
+
+
+# In[7]:
+
+
+cris.head()
+
+
+# In[8]:
+
+
+text=cris['Description']
+
+
+# In[9]:
+
+
+import sys
+# !{sys.executable} -m spacy download en
+import re, numpy as np, pandas as pd
+from pprint import pprint
+
+# Gensim
+import gensim, spacy, logging, warnings
+import gensim.corpora as corpora
+from gensim.utils import lemmatize, simple_preprocess
+from gensim.models import CoherenceModel
+import matplotlib.pyplot as plt
+
+# NLTK Stop words
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+stop_words = stopwords.words('english')
+stop_words.extend(['from', 'subject', 're', 'edu', 'use', 'not', 'would', 'say', 'could', '_', 'be', 'know', 'good', 'go', 'get', 'do', 'done', 'try', 'many', 'some', 'nice', 'thank', 'think', 'see', 'rather', 'easy', 'easily', 'lot', 'lack', 'make', 'want', 'seem', 'run', 'need', 'even', 'right', 'line', 'even', 'also', 'may', 'take', 'come'])
+
+get_ipython().run_line_magic('matplotlib', 'inline')
+warnings.filterwarnings("ignore",category=DeprecationWarning)
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
+
+
+# In[10]:
+
+
+def sent_to_words(sentences):
+    for sent in sentences:       
+        sent = re.sub('\"', "", sent)  # remove single quotes
+        sent = gensim.utils.simple_preprocess(str(sent), deacc=True) 
+        yield(sent)  
+
+
+# In[11]:
+
+
+# Convert to list
+data = text.values.tolist()
+
+
+# In[12]:
+
+
+# Build the bigram and trigram models
+data_words = list(sent_to_words(data))
+bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
+trigram = gensim.models.Phrases(bigram[data_words], threshold=100)  
+bigram_mod = gensim.models.phrases.Phraser(bigram)
+trigram_mod = gensim.models.phrases.Phraser(trigram)
+
+# !python3 -m spacy download en  # run in terminal once
+def process_words(texts, stop_words=stop_words, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+   """Remove Stopwords, Form Bigrams, Trigrams and Lemmatization"""
+   texts = [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
+   texts = [bigram_mod[doc] for doc in texts]
+   texts = [trigram_mod[bigram_mod[doc]] for doc in texts]
+   texts_out = []
+   nlp = spacy.load('en', disable=['parser', 'ner'])
+   for sent in texts:
+       doc = nlp(" ".join(sent)) 
+       texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+   # remove stopwords once more after lemmatization
+   texts_out = [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts_out]    
+   return texts_out
+
+data_ready = process_words(data_words)  # processed Text Data!
+
+
+# In[13]:
+
+
+id2word = corpora.Dictionary(data_ready)
+
+# Create Corpus: Term Document Frequency
+corpus = [id2word.doc2bow(text) for text in data_ready]
+
+# Build LDA model
+lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
+                                           id2word=id2word,
+                                           num_topics=5, 
+                                           random_state=100,
+                                           update_every=1,
+                                           chunksize=10,
+                                           passes=10,
+                                           alpha='symmetric',
+                                           iterations=100,
+                                           per_word_topics=True)
+
+pprint(lda_model.print_topics())
+
+
+# In[14]:
+
+
+def format_topics_sentences(ldamodel=None, corpus=corpus, texts=data):
+    # Init output
+    sent_topics_df = pd.DataFrame()
+
+    # Get main topic in each document
+    for i, row_list in enumerate(ldamodel[corpus]):
+        row = row_list[0] if ldamodel.per_word_topics else row_list            
+        # print(row)
+        row = sorted(row, key=lambda x: (x[1]), reverse=True)
+        # Get the Dominant topic, Perc Contribution and Keywords for each document
+        for j, (topic_num, prop_topic) in enumerate(row):
+            if j == 0:  # => dominant topic
+                wp = ldamodel.show_topic(topic_num)
+                topic_keywords = ", ".join([word for word, prop in wp])
+                sent_topics_df = sent_topics_df.append(pd.Series([int(topic_num), round(prop_topic,4), topic_keywords]), ignore_index=True)
+            else:
+                break
+    sent_topics_df.columns = ['Dominant_Topic', 'Perc_Contribution', 'Topic_Keywords']
+
+    # Add original text to the end of the output
+    contents = pd.Series(texts)
+    sent_topics_df = pd.concat([sent_topics_df, contents], axis=1)
+    return(sent_topics_df)
+
+
+df_topic_sents_keywords = format_topics_sentences(ldamodel=lda_model, corpus=corpus, texts=data_ready)
+
+# Format
+df_dominant_topic = df_topic_sents_keywords.reset_index()
+df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
+df_dominant_topic.head(10) 
+
+
+# In[15]:
+
+
+from matplotlib import pyplot as plt
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.colors as mcolors
+
+cols = [color for name, color in mcolors.TABLEAU_COLORS.items()]  # more colors: 'mcolors.XKCD_COLORS'
+
+cloud = WordCloud(stopwords=stop_words,
+                  background_color='white',
+                  width=2500,
+                  height=1800,
+                  max_words=10,
+                  colormap='tab10',
+                  color_func=lambda *args, **kwargs: cols[i],
+                  prefer_horizontal=1.0)
+
+topics = lda_model.show_topics(formatted=False)
+
+fig, axes = plt.subplots(2, 2, figsize=(10,10), sharex=True, sharey=True)
+
+for i, ax in enumerate(axes.flatten()):
+    fig.add_subplot(ax)
+    topic_words = dict(topics[i][1])
+    cloud.generate_from_frequencies(topic_words, max_font_size=300)
+    plt.gca().imshow(cloud)
+    plt.gca().set_title('Topic ' + str(i), fontdict=dict(size=16))
+    plt.gca().axis('off')
+
+
+plt.subplots_adjust(wspace=0, hspace=0)
+plt.axis('off')
+plt.margins(x=0, y=0)
+plt.tight_layout()
+plt.show()
+
+
+# In[16]:
+
+
+import pyLDAvis.gensim
+pyLDAvis.enable_notebook()
+vis = pyLDAvis.gensim.prepare(lda_model, corpus, dictionary=lda_model.id2word)
+vis
+
+
+# In[ ]:
+
+
+
+
